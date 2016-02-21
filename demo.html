@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Demo for WAP course project</title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="common.css">
+	<script type="text/javascript" src="form-validator.js"></script>
+</head>
+<body>
+	<h2 class="demo-header">Project WAP 2015/2016</h2>
+	<h3 class="demo-header">Form Validation</h3>
+	<h4 class="demo-header">Marek Milkovič - xmilko01@stud.fit.vutbr.cz</h4>
+
+	<div class="form-container">
+		<form id="example1">
+			<table>
+				<tr>
+					<td><label>Name (max. 20):</label></td>
+					<td><input type="text" name="name"></td>
+				</tr>
+				<tr>
+					<td><label>Surname (max. 20):</label></td>
+					<td><input type="text" name="surname"></td>
+				</tr>
+				<tr>
+					<td><label>Mail:</label></td>
+					<td><input type="text" name="mail"></td>
+				</tr>
+				<tr>
+					<td><label>Birthdate (YYYY/MM/DD):</label></td>
+					<td><input type="text" name="birthdate"></td>
+				</tr>
+				<tr>
+					<td><label>Phone number (up to 12 digits, may begin with +):</label></td>
+					<td><input type="text" name="phone_number"></td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<input type="submit" name="submit" value="Submit">
+						<input type="submit" name="cancel" value="Cancel">
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+
+	<script type="text/javascript">
+		// Step 1 - Create Form object with ID of form element.
+		example_form = new Form('example1');
+
+		// Step 2 - Define constraints for input text fields.
+		example_form.field('name')
+					.max_length(20)
+					.required();
+		example_form.field('surname')
+					.max_length(20)
+					.required();
+		example_form.field('mail')
+					.regex(/[-a-zA-Z0-9_]+@[-a-zA-Z0-9_]+\.[a-zA-Z][a-zA-Z]+/)
+					.required();
+		example_form.field('birthdate')
+					.regex(/[0-9]{4}\/[0-9]{2}\/[0-9]{2}/)
+					.optional();
+		example_form.field('phone_number')
+					.regex(/\+?[0-9]*/)
+					.max_length(13)
+					.optional();
+
+		// Step 3 - Define constraints for submit controls.
+		example_form.submit('submit')
+					.enabled_if_valid();
+		example_form.submit('cancel')
+					.enabled_always();
+
+		// Step 4 - Add form from Step 1 to form validator.
+		FormValidator.add_form(example_form);
+	</script>
+</body>
+</html>

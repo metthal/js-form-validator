@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Programmers guide for WAP course project</title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="common.css">
+	<script type="text/javascript" src="form-validator.js"></script>
+</head>
+<body>
+	<h2 class="demo-header">Project WAP 2015/2016</h2>
+	<h3 class="demo-header">Form Validation</h3>
+	<h4 class="demo-header">Marek Milkovič - xmilko01@stud.fit.vutbr.cz</h4>
+
+	<h4>Overview</h4>
+	This library is JavaScript library for client-side form validation. The library provides 4 methods of defining constraints on input text fields, which are
+	<ul>
+		<li>Minimum input length</li>
+		<li>Maximum input length</li>
+		<li>Regular expression</li>
+		<li>Necessity of input field value</li>
+	</ul>
+	The library also provides ways to automatically enable or disable submit buttons associated with a form based on its validness.
+
+	<h4>Form Validation</h4>
+	In order to create your own form validation, you need make <code class="inline">form</code> element in your HTML document and give it unique identificator
+	using <code class="inline">id</code> attribute. This identification is required. After creating your <code class="inline">form</code>, populating it with
+	input controls and linking the library to your HTML document, we can start with defining constraints for our <code class="inline">form</code>.
+	We start with inserting JavaScript right before the end of <code class="inline">body</code> element (or anywhere else where DOM of your
+	<code class="inline">form</code> is already built) and creating <code class="inline">Form</code> object with the identificator we have provided before.
+	<code class="snippet">
+		&lt;form id="my-form"&gt;<br>
+			<div class="indent1">
+			...
+			</div>
+		&lt;/form&gt;<br>
+		...<br>
+		&lt;script type="text/javascript"&gt;<br>
+			<div class="indent1">
+			my_form = new Form('my-form');<br>
+			</div>
+		&lt;/script&gt;
+	</code>
+	If <code class="inline">form</code> with given identificator does not exist, then library informs about this in JavaScript output console and the form
+	validation stops working. Constraints can be then defined through functions <code class="inline">field</code> and <code class="inline">submit</code>, depending
+	on whether you want to restrict input text fields or submit buttons. These functions accept one parameter, which represents <code class="inline">name</code>
+	attribute given to <code class="inline">input</code> tag. Each of these functions return you a object representing input control for given
+	<code class="inline">name</code> with default contraints, which are different for each input control.
+	<ul>
+		<li><b>Input text field</b> - required, no lower and upper length limit, no regular expression</li>
+		<li><b>Submit button</b> - enabled if the form is valid</li>
+	</ul>
+	From this object, you can then call series of different functions that define constraints and return the same object as before but with added constraint
+	defined by the function called. For input text field these functions are
+	<code class="snippet">
+		min_length(length)<br>
+		max_length(length)<br>
+		regex(regular_expression)<br>
+		required()<br>
+		optional()
+	</code>
+	For the submit buttons they are
+	<code class="snippet">
+		enabled_always()<br>
+		enabled_if_valid()<br>
+		enabled_if_invalid()
+	</code>
+	So to define two input text fields where first is required and accepts only input with length from 5 to 10
+	and second one accepts only digits and is optional, while submit button is enabled only if the form is valid,
+	you can do following.
+	<code class="snippet">
+		&lt;form id="my-form"&gt;<br>
+			<div class="indent1 new">
+			&lt;input type="text" name="text-field-1"&gt;<br>
+			&lt;input type="text" name="text-field-2"&gt;<br>
+			&lt;input type="submit" name="submit-button" value="Submit"&gt;<br>
+			</div>
+		&lt;/form&gt;<br>
+		...<br>
+		&lt;script type="text/javascript"&gt;<br>
+			<div class="indent1">
+			my_form = new Form('my-form');<br>
+			<div class="new">
+			my_form.field('text-field-1').min_length(5).max_length(10).required();<br>
+			my_form.field('text-field-2').regex(/[0-9]*/).optional();<br>
+			my_form.submit('submit-button').enabled_if_valid();<br>
+			</div>
+			</div>
+		&lt;/script&gt;
+	</code>
+	If you use the same functions or functions that are mutually exclusive (<code class="inline">required</code> and <code class="inline">optional</code>)
+	in the sequence, only the last one called takes the effect.
+	However, if you try to run this code, it still does not work. There is one last required step that needs to be performed and that is registration
+	of <code class="inline">my_form</code> into <code class="inline">FormValidator</code> module. So the final code would look like this.
+	<code class="snippet">
+		&lt;form id="my-form"&gt;<br>
+			<div class="indent1">
+			&lt;input type="text" name="text-field-1"&gt;<br>
+			&lt;input type="text" name="text-field-2"&gt;<br>
+			&lt;input type="submit" name="submit-button" value="Submit"&gt;<br>
+			</div>
+		&lt;/form&gt;<br>
+		...<br>
+		&lt;script type="text/javascript"&gt;<br>
+			<div class="indent1">
+			my_form = new Form('my-form');<br>
+			my_form.field('text-field-1').min_length(5).max_length(10).required();<br>
+			my_form.field('text-field-2').regex(/[0-9]*/).optional();<br>
+			my_form.submit('submit-button').enabled_if_valid();<br>
+			<span class="new">FormValidator.add_form(my_form);<br></span>
+			</div>
+		&lt;/script&gt;
+	</code>
+
+	<h4>Color Highlighting</h4>
+	The library is shipped with default color highlighting for valid and invalid input controls, which are defined in
+	<code class="inline">common.css</code> the following way.
+	<code class="snippet">
+input[type="text"].valid {<br>
+<div class="indent1">
+	color: rgb(255, 255, 255);<br>
+	background-color: rgb(42, 175, 44);<br>
+</div>
+}<br>
+<br>
+input[type="text"].invalid {<br>
+<div class="indent1">
+	color: rgb(255, 255, 255);<br>
+	background-color: rgb(215, 44, 44);<br>
+</div>
+}<br>
+<br>
+input[type="submit"].valid {<br>
+<div class="indent1">
+	color: rgb(255, 255, 255);<br>
+	background-color: rgb(42, 175, 44);<br>
+</div>
+}<br>
+<br>
+input[type="submit"].invalid {<br>
+<div class="indent1">
+	color: rgb(255, 255, 255);<br>
+	background-color: rgba(215, 44, 44, 0.5);<br>
+</div>
+}
+	</code>
+As you can see, every input control that does not satisfy its constraints is marked with class <code class="inline">invalid</code> and if it does satisfy them it is
+marked with <code class="inline">valid</code> class. These two classes are exclusive, so they are not applied to single element both at the same time. Text fields
+that are optional are not marked with any class if their input value is empty.
+
+<h4>Examples</h4>
+The demo document with example on how to use form validation is shipped with library and can be found in the file <a href="demo.html">demo.html</a>.
+</body>
+</html>
