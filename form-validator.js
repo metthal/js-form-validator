@@ -309,7 +309,7 @@ function Submit(node) {
 function Form(id) {
 	this.id = id;
 	this.element = document.getElementById(id);
-	if (this.element == undefined) {
+	if (this.element == undefined || this.element.tagName.toUpperCase() != 'FORM') {
 		console.log('No form with id \'' + id + '\' found.');
 		return;
 	}
